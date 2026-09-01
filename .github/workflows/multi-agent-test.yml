@@ -5,6 +5,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: multi-agent-evaluation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   evaluate:
     runs-on: ubuntu-latest
@@ -30,8 +37,14 @@ jobs:
         run: python -m pip install -r project/requirements.txt
 
       - name: Run multi-agent evaluation
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         working-directory: project
         run: python project_starter.py
+
+      - name: Run safe pull request validation
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        working-directory: project
+        run: python -m py_compile project_starter.py
 
       - name: Upload evaluation results
         if: always()
