@@ -707,6 +707,7 @@ class OrderResult(BaseModel):
     delivery_date: str
     transactions: List[int]
     message: str
+    follow_up_request: Optional[str] = None
 
 
 class FinancialResult(BaseModel):
@@ -950,6 +951,30 @@ def transaction_tool(
     return response
 
 
+def _check_order_availability(
+    quote_result: QuoteResult,
+    request_date: str,
+) -> tuple[bool, str]:
+    """Validate every quoted line against the current database state."""
+    requested_by_item: Dict[str, int] = {}
+    for line in quote_result.items:
+        item_name = canonical_item_name(line.item_name)
+        requested_by_item[item_name] = requested_by_item.get(item_name, 0) + line.units
+
+    for item_name, requested_units in requested_by_item.items():
+        stock = get_stock_level(item_name, request_date)
+        available_units = (
+            int(stock.iloc[0]["current_stock"]) if not stock.empty else 0
+        )
+        if available_units < requested_units:
+            return (
+                False,
+                f"Insufficient stock for {item_name}: "
+                f"available {available_units}, requested {requested_units}.",
+            )
+    return True, ""
+
+
 def cash_balance_tool(
     ctx: RunContext[AgentDependencies],
     as_of_date: str,
@@ -1010,7 +1035,8 @@ def _build_agents() -> Dict[str, Agent]:
             "order, call delivery_date_tool, and call transaction_tool for "
             "each accepted sales line. For transaction_tool, transaction_type must be exactly "
             "'sales' (never 'sale') or 'stock_orders' (never 'stock order'). "
-            "Never invent transaction IDs."
+            "Never invent transaction IDs. If a tool reports insufficient stock, do not repeat "
+            "the failed transaction; return accepted=false with actionable feedback."
         ),
         tools=[inventory_tool, delivery_date_tool, transaction_tool],
     )
@@ -1133,7 +1159,10 @@ async def _run_multi_agent_workflow(request: str, request_date: str) -> Workflow
         decision = "decline"
         customer_result.decision = decision
         break
-    if customer_result.decision == "accept":
+    can_fulfill, availability_message = _check_order_availability(
+        quote_result, request_date
+    )
+    if customer_result.decision == "accept" and can_fulfill:
         order_payload = json.dumps(
             {
                 "request_date": request_date,
@@ -1144,7 +1173,49 @@ async def _run_multi_agent_workflow(request: str, request_date: str) -> Workflow
             ensure_ascii=True,
         )
         _log_event("orchestrator.delegate", agent="ordering-agent", payload=order_payload)
-        order_result = (await agents["ordering"].run(order_payload, deps=deps)).output
+        try:
+            order_result = (await agents["ordering"].run(order_payload, deps=deps)).output
+        except ValueError as exc:
+            error_message = str(exc)
+            follow_up_request = (
+                f"We could not place the order because {error_message} "
+                "Please submit a revised request with quantities that fit the "
+                "available inventory."
+            )
+            _log_event(
+                "ordering.error",
+                error_type=type(exc).__name__,
+                message=error_message,
+                feedback=follow_up_request,
+            )
+            order_result = OrderResult(
+                request_date=request_date,
+                accepted=False,
+                delivery_date="",
+                transactions=[],
+                message=(
+                    "The order could not be completed because the requested "
+                    f"stock changed during validation: {error_message}"
+                ),
+                follow_up_request=follow_up_request,
+            )
+    elif customer_result.decision == "accept":
+        order_result = OrderResult(
+            request_date=request_date,
+            accepted=False,
+            delivery_date="",
+            transactions=[],
+            message=f"Order not placed: {availability_message}",
+            follow_up_request=(
+                "Please submit a revised request with quantities no greater "
+                "than the available inventory."
+            ),
+        )
+        _log_event(
+            "ordering.skipped",
+            reason="insufficient_stock",
+            message=availability_message,
+        )
     else:
         order_result = OrderResult(
             request_date=request_date, accepted=False, delivery_date="",
@@ -1284,6 +1355,9 @@ def run_test_scenarios(full_evaluation: bool = True):
                     "accepted": order_result.accepted if is_final else False,
                     "delivery_date": order_result.delivery_date if is_final else "",
                     "order_message": order_result.message if is_final else "Negotiation continued.",
+                    "follow_up_request": (
+                        order_result.follow_up_request if is_final else ""
+                    ),
                     "transaction_ids": json.dumps(order_result.transactions) if is_final else "[]",
                     "quote_subtotal": quote_data["subtotal"],
                     "quote_discount": quote_data["discount"],
