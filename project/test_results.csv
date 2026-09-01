@@ -1,0 +1,98 @@
+request_id,request_date,negotiation_round,negotiation_decision,revised_request,accepted,delivery_date,order_message,transaction_ids,quote_subtotal,quote_discount,quote_total,inventory_status,cash_balance,inventory_value,total_assets
+1.0,2025-04-01,0,accept,,True,2025-04-05,"All requested supplies have been accepted and will be delivered by April 5, 2025.","[20, 21, 20]",65.0,6.5,58.5,All requested paper supplies are available for delivery.,45060.149999999994,4875.3,49935.45
+2.0,2025-04-03,0,decline,,False,,Customer did not accept the offer; no order was placed.,[],160.0,0.0,160.0,"Poster paper: lead time 15-30 days; streamers: lead time 25-45 days, min 5,000 units; balloons: lead time 3-7 days for stock.",45060.149999999994,4875.3,49935.45
+3.0,2025-04-04,0,decline,"I need to order 10,000 sheets of A4 paper, 5,000 sheets of A3 paper, and 500 reams of printer paper. The supplies must be delivered by April 15, 2025. Please confirm if you can accommodate delivery after replenishment or suggest an alternative solution.",False,,Customer did not accept the offer; no order was placed.,[],3500.0,0.0,3500.0,A4 paper sheets: Replenishment needed; lead time 7-12 days. A3 paper sheets: Replenishment needed; lead time 7-14 days. Printer paper reams: Replenishment needed; lead time 15-20 days.,45060.149999999994,4875.3,49935.45
+4.0,2025-04-05,0,revised_request,"Please provide 505 sheets of high-quality, recycled cardstock in various colors to meet the order request, along with 250 sheets of A4 size printer paper. I still need the order delivered by April 15, 2025.",False,,Negotiation continued.,[],87.5,0.0,87.5,"Cardstock: replenishment required; A4 paper: available. Recommended suppliers for cardstock: OnTimeSupplies, The Paper Mill Store, and LCI Paper.",,,
+4.1,2025-04-05,1,revised_request,"Please provide 505 sheets of high-quality, recycled cardstock in various colors to meet the order request, along with 250 sheets of A4 size printer paper. I still need the order delivered by April 15, 2025.",False,,Customer did not accept the offer; no order was placed.,[],88.25,0.0,88.25,"Cardstock can be sourced from suppliers at a cost of $0.18 to $0.74 per sheet, with varying lead times.",45060.149999999994,4875.3,49935.45
+5.0,2025-04-05,0,revised_request,"I would like to place an order for 500 sheets of 8.5""x11"" colored paper (with 14 days lead time), 300 sheets of cardstock in various colors, and 200 rolls of decorative washi tape (with 10-15 working days lead time). Please confirm if delivery by April 15, 2025 is possible with these conditions. Thank you!",False,,Negotiation continued.,[],145.0,10.35,134.65,"8.5x11 colored paper: unknown item; Cardstock: available; Decorative adhesive tape (washi tape): unknown item. 
+ 
+Supplier research has confirmed availability for both items but with lead times that may affect delivery: 
+- **8.5x11 colored paper:** 14 days lead time at $19.09 per ream from Staples. 
+- **Decorative adhesive tape (washi tape):** Ranges from $0.40 to $2.68 per unit, with 10-15 working days lead time.",,,
+5.1,2025-04-05,1,revised_request,"I would like to place an order for 300 sheets of cardstock in various colors, and 200 rolls of decorative washi tape. I will remove the request for colored paper due to availability issues. Please confirm if delivery by April 15, 2025 is possible with these conditions. Thank you!",False,,Customer did not accept the offer; no order was placed.,[],135.0,13.5,121.5,"colored paper 8.5x11: unavailable; Cardstock: available; Decorative adhesive tape (washi tape): unavailable. External suppliers confirm availability for colored paper with 5-7 business days lead time, and washi tape with lead time of 10-15 working days.",45060.149999999994,4875.3,49935.45
+6.0,2025-04-06,0,revised_request,"I would like to order 500 sheets of colorful construction paper in various colors, 300 sheets of white printer paper, and 200 sheets of cardstock in various colors. Please confirm availability for all items to ensure delivery by April 15, 2025. If any items are currently out of stock, please provide alternatives or expected availability dates.",False,,Negotiation continued.,[],98.0,0.0,98.0,Replenishment needed for colorful construction paper and white printer paper. Cardstock is available.,,,
+6.1,2025-04-06,1,revised_request,"I would like to order 500 sheets of colorful construction paper, 300 sheets of white printer paper, and 200 sheets of cardstock in various colors. Please confirm availability for all items to ensure delivery by April 15, 2025. If any items are currently out of stock, please provide alternatives or expected availability dates.",False,,Customer did not accept the offer; no order was placed.,[],83.0,0.0,83.0,Construction paper: unknown item; Standard copy paper: unknown item; Cardstock: available. Recommended to consider alternative suppliers for colorful construction paper and white printer paper.,45060.149999999994,4875.3,49935.45
+7.0,2025-04-07,0,revised_request,"I would like to place a large order for various types of paper supplies for our upcoming exhibition with revised quantities due to availability constraints. We need the following items:
+
+- 387 sheets of glossy A4 paper (available)
+- 0 sheets of matte A3 paper (availability unknown, please suggest alternatives)
+- 0 poster boards (24"" x 36"") (availability unknown, please suggest alternatives)
+- 0 sheets of heavyweight cardstock (availability unknown, please suggest alternatives)
+
+We need these supplies delivered by April 15, 2025. Thank you.",False,,Negotiation continued.,[],610.0,0.0,610.0,"Glossy Paper: 387 units available, replenishment required for 113 units; Matte Paper: 1000 units needed but unknown item; Poster Board 24"" x 36"": 300 units needed but unknown item; Heavyweight Cardstock: 200 units needed but unknown item.",,,
+7.1,2025-04-07,1,revised_request,"I would like to place a large order for various types of paper supplies for our upcoming exhibition. We need the following items:
+
+- 387 sheets of glossy A4 paper
+- 500 sheets of large poster paper (24"" x 36"")
+- 200 sheets of 250 gsm cardstock (alternative for heavyweight cardstock)
+
+We need these supplies delivered by April 15, 2025. Thank you.",False,,Customer did not accept the offer; no order was placed.,[],78.9,0.0,78.9,"Glossy paper: available; Matte paper: unknown item; poster boards 24"" x 36"": unknown item; heavyweight cardstock: unknown item. Supplier research indicates options for the unknown items.",45060.149999999994,4875.3,49935.45
+8.0,2025-04-07,0,revised_request,"I would like to place a large order for the following paper supplies with adjusted quantities due to availability issues:
+
+- 387 sheets of A4 glossy paper (limited stock)
+- 0 sheets of A4 matte paper (not available)
+- 0 sheets of A5 colored paper (not available)
+- 0 sheets of A4 recycled paper (not available)
+
+Please advise on possible substitutions or alternative options. I still require delivery by April 15, 2025.",False,,Negotiation continued.,[],720.0,0.0,720.0,"Glossy paper: replenishment required (387 available, 113 needed); Matte paper, A5 colored paper, and A4 recycled paper are unknown items needing sourcing.",,,
+8.1,2025-04-07,1,accept,,True,2025-04-11,"Your order for 387 sheets of A4 glossy paper has been accepted. Delivery is scheduled for April 11, 2025.",[20],77.4,0.0,77.4,"You can order 387 sheets of A4 glossy paper which are available. The other requested items (A4 matte paper, A5 colored paper, A4 recycled paper) are not available, and alternative options are recommended.",45060.34999999999,4797.9,49858.25
+9.0,2025-04-07,0,revised_request,"I would like to place an order for the following paper supplies for the reception:
+
+- 200 sheets of A4 white printer paper
+- 50 packets of 100% recycled kraft paper envelopes
+
+Please provide an alternative for the 100 sheets of A3 glossy paper, as it is currently unavailable. I need these supplies delivered by April 10, 2025. Thank you.",False,,Negotiation continued.,[],37.5,0.0,37.5,"A4 paper: available; Glossy paper: replenishment required (lead time ranges from 15 to 40 days, prices vary); 100% recycled kraft paper envelopes: replenishment required (limited availability, 12-hour lead time possible for some suppliers).",,,
+9.1,2025-04-07,1,revised_request,"I would like to place an order for the following paper supplies for the reception:
+
+- 200 sheets of A4 white printer paper
+- 50 packets of an alternative to 100% recycled kraft paper envelopes
+
+Please provide an alternative for the 100 sheets of A3 glossy paper, as it is currently unavailable. I need these supplies delivered by April 10, 2025. Thank you.",False,,Customer did not accept the offer; no order was placed.,[],35.0,0.0,35.0,A4 paper: available; 100% Recycled Kraft Paper Envelopes: limited availability and lead time; Glossy paper: replenishment required.,45060.34999999999,4797.9,49858.25
+13.0,2025-04-08,0,revised_request,"I would like to order 272 sheets of A4 printing paper and 200 sheets of cardstock for our upcoming gathering. Please deliver the supplies as soon as possible, preferably no later than April 10, 2025. (Date of request: 2025-04-08)",False,,Negotiation continued.,[],55.0,5.5,49.5,"A4 paper: replenishment required; Cardstock: available. For A4 Printing Paper, 228 more units are needed. Lead time is estimated at 7–12 days for standard orders, shipping within 5-10 days for stock products. For Cardstock, local supplier has 0 units available, with a delivery time of 2 days from OnTimeSupplies.com.",,,
+13.1,2025-04-08,1,decline,,False,,Customer did not accept the offer; no order was placed.,[],43.6,0.0,43.6,A4 paper: available; Cardstock: available,45060.34999999999,4797.9,49858.25
+12.0,2025-04-08,0,decline,"I would like to order 200 sheets of colorful cardstock, 500 sheets of standard printer paper, and 100 paper napkins for our upcoming party. However, if these items are unavailable, please inform me of alternative products that can be delivered by April 15, 2025.",False,,Customer did not accept the offer; no order was placed.,[],42.0,4.2,37.8,colorful cardstock: unknown item; standard printer paper: unknown item; paper napkins: unknown item. All requested items are unavailable in the inventory.,45060.34999999999,4797.9,49858.25
+10.0,2025-04-08,0,revised_request,"Please provide a quote for 500 sheets of high-quality glossy paper and 300 sheets of sturdy cardstock with an emphasis on expedited delivery options for urgent needs due to an upcoming show, ensuring delivery by April 15, 2025.",False,,Negotiation continued.,[],145.0,0.0,145.0,"Replenishment is required for both items. Supplier availability for high-quality glossy paper is confirmed; lead time is 7-15 days. For cardstock, lead time is 2 business days.",,,
+10.1,2025-04-08,1,decline,,False,,Customer did not accept the offer; no order was placed.,[],145.0,10.0,135.0,high-quality glossy paper: unknown item; sturdy cardstock: unknown item; Supplier availability for high-quality glossy paper is typically 7–15 days with prices from $10-$40 per unit; sturdy cardstock lead time is two business days with bulk options available on OnTimeSupplies.,45060.34999999999,4797.9,49858.25
+11.0,2025-04-08,0,decline,"I would like to order 500 sheets of A3 glossy paper to be delivered by April 15, 2025, and I would like a recommendation for A4 matte paper since it will not be available in time. Thank you.",False,,Customer did not accept the offer; no order was placed.,[],154.0,4.62,149.38,"
+- Glossy paper: replenishment required; supplier availability confirmed; lead time is 24 hours; prices range from $60 to $114.95.
+Options: [Glossy Coated Paper Sample](https://www.accio.com/plp/glossy-coated-paper-sample), [Alibaba Glossy Paper Price](https://www.alibaba.com/showroom/glossy-paper-price.html), [Koala Photo Paper](https://www.koalagp.com/collections/photo-paper-wholesale).
+
+- Matte paper: supplier availability confirmed; lead time is 15 workdays; prices range from US$0.30 to US$0.90 per unit.
+Options: [Amazon Matte Photo Paper](https://www.amazon.com/Sheets-Printer-Picture-Calendars-Brochures/dp/B0GL2K4J26), [Waterproof Matte Paper](https://m.made-in-china.com/product/Waterproof-Gloss-Matte-Photo-Paper-Factory-Price-Professional-Inkjet-Printing-120g-140g-160g-180g-200g-240g-260g-300g-High-Glossy-Photo-Paper-2161189162.html), [Matte Coated Paper Wholesale](https://www.accio.com/supplier/matte-coated-paper-wholesale-price).",45060.34999999999,4797.9,49858.25
+14.0,2025-04-09,0,revised_request,"I would like to place a large order for high-quality paper supplies for our upcoming performance. We need the following: 5,000 sheets of A4 paper, 2,000 sheets of poster paper in various colors (specify colors), and 500 sheets of cardstock. Please confirm pricing and delivery by April 15, 2025. Thank you.",False,,Negotiation continued.,[],825.0,0.0,825.0,A4 paper: replenishment required with suppliers confirmed; Poster paper: unknown item; Cardstock: replenishment required and suppliers available.,,,
+14.1,2025-04-09,1,revised_request,"I would like to place a large order for high-quality paper supplies for our upcoming performance. We need the following: 5,000 sheets of A4 paper, 2,000 sheets of poster paper in various colors (specify colors), and 500 sheets of cardstock. Please confirm pricing and delivery by April 15, 2025. Thank you.",False,,Customer did not accept the offer; no order was placed.,[],1100.0,55.0,1045.0,A4 paper: replenishment required; Poster paper: unknown item; Cardstock: replenishment required.,45060.34999999999,4797.9,49858.25
+15.0,2025-04-12,0,decline,,False,,Customer did not accept the offer; no order was placed.,[],1075.0,107.5,967.5,A4 paper: replenishment required; A3 Colored Paper: unknown item; Cardboard for Signage: unknown item.,45060.34999999999,4797.9,49858.25
+16.0,2025-04-13,0,revised_request,"I would like to place an order for 272 sheets of A4 printer paper and 100 sheets of poster board. I need these supplies delivered by April 15, 2025, in time for our assembly event. (Date of request: 2025-04-13)",False,,Negotiation continued.,[],64.0,3.2,60.8,"A4 paper: replenishment required (228 units needed), construction paper: unavailable, large poster paper available.",,,
+16.1,2025-04-13,1,accept,,True,2025-04-14,"Order accepted. A4 paper will be delivered by April 14, 2025, and poster board will be delivered by the same date.","[23, 24]",38.6,0.0,38.6,Both requested items are available; A4 paper has 272 sheets and Large poster paper has 699 sheets available.,45060.649999999994,4684.299999999999,49744.95
+17.0,2025-04-14,0,revised_request,"I would like to place a medium order for the following paper supplies for our upcoming reception:
+
+- 1000 sheets of A4 white printer paper
+- 500 sheets of A3 colored paper (substitute with another available item)
+- 2000 table napkins (white, substitute with another available item)
+- 1000 paper cups (substitute with another available item)
+- 500 paper plates (substitute with another available item)
+
+I need these supplies delivered by April 15, 2025. Thank you. (Date of request: 2025-04-14)",False,,Negotiation continued.,[],270.0,0.0,270.0,A4 paper: replenishment required; A3 colored paper: unknown item; Paper napkins: unknown item; biodegradable paper cups: unknown item; biodegradable paper plates: unknown item.,,,
+17.1,2025-04-14,1,revised_request,"I would like to place a medium order for the following paper supplies for our upcoming reception:
+
+- 1000 sheets of A4 white printer paper
+- 500 sheets of A3 colored paper (substitute with another available item)
+- 2000 table napkins (white, substitute with another available item)
+- 1000 paper cups (substitute with another available item)
+- 500 paper plates (substitute with another available item)
+
+I need these supplies delivered by April 15, 2025. Thank you. (Date of request: 2025-04-14)",False,,Customer did not accept the offer; no order was placed.,[],270.0,10.8,259.2,A4 paper: replenishment required with a lead time of 15 to 45 days; A3 colored paper: unknown item; Paper napkins: lead time of 12 business days; Paper cups: lead time of 10-15 days; Paper plates: available.,45060.649999999994,4684.299999999999,49744.95
+18.0,2025-04-14,0,revised_request,"I would like to place a medium order for the following paper supplies for our upcoming ceremony: 200 sheets of colored paper in assorted colors. Please confirm if delivery by April 15, 2025, is feasible, and provide availability on high-quality cardstock and standard printing paper at that time.",False,,Negotiation continued.,[],139.0,0.0,139.0,high-quality white cardstock: replenishment required; standard printing paper: replenishment required; colored paper: available.,,,
+18.1,2025-04-14,1,revised_request,"I would like to place a medium order for the following paper supplies for our upcoming ceremony: 200 sheets of colored paper in assorted colors. Please confirm if delivery by April 15, 2025, is feasible, and provide availability on high-quality cardstock and standard printing paper at that time.",False,,Customer did not accept the offer; no order was placed.,[],20.0,0.0,20.0,"Colored paper: available; high-quality cardstock: unavailable, recommended supplier options available; standard printing paper: unavailable, recommended supplier options available.",45060.649999999994,4684.299999999999,49744.95
+19.0,2025-04-15,0,decline,"Dear [Manufacturer's Name],
+
+I would like to place an order for the following paper supplies for our upcoming exhibition, adjusting the order due to item availability:
+
+- 2000 sheets of A4 glossy paper (substitute with supplier)
+- 1500 sheets of A3 matte paper (substitute with supplier)
+- 1000 sheets of cardstock in assorted colors (substitute with supplier)
+
+We need the supplies delivered by April 20, 2025.
+
+Thank you! (Date of request: 2025-04-15)",False,,Customer did not accept the offer; no order was placed.,[],820.0,0.0,820.0,Glossy paper: replenishment required; Matte paper: unknown item; cardstock assorted colors: unknown item; Suggested suppliers for glossy paper and matte paper.,45060.649999999994,4684.299999999999,49744.95
+20.0,2025-04-17,0,decline,"I would like to place a large order for the following paper supplies for our upcoming concert: 5000 flyers, 2000 posters, and 10000 tickets. I understand that these items currently require replenishment, so please provide details on when we can expect delivery by if the order is placed. If you can also provide alternative options that might allow for timely delivery, that would be appreciated.",False,,Customer did not accept the offer; no order was placed.,[],2250.0,90.0,2160.0,Replenishment is needed for all requested items due to zero available units. Research indicates various suppliers for each item with differing lead times and price ranges.,45060.649999999994,4684.299999999999,49744.95

@@ -1,0 +1,13 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Local project data
+project/*.db
+project/logs/*
+lessons

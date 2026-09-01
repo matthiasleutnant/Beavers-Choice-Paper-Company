@@ -1,0 +1,123 @@
+= Beaver's Choice Paper Company: Agent Workflow
+:toc:
+:sectnums:
+:source-highlighter: highlight.js
+
+== Scope
+
+The system processes text-only customer requests and coordinates inventory,
+quoting, fulfillment, and reporting. The internal team uses exactly five agents.
+An external Customer Agent was added later as a partner-facing extension. It is
+not part of the internal team count and is shown outside the five-agent package
+in the diagram.
+The implementation uses Pydantic AI with typed outputs and validated tool
+inputs.
+
+. Orchestrator
+. Inventory
+. Quoting
+. Ordering
+. Financial
+
+The Orchestrator is the single entry point. Agent hand-offs use validated JSON
+payloads with normalized item names, quantities, and ISO dates.
+The external Customer Agent runs first and enriches the request with customer
+context and negotiation points without inventing operational facts. This is a
+backward-compatible extension of the original workflow rather than a redesign
+of the internal team.
+After parsing the request, Inventory and Quoting are dispatched in parallel
+because neither depends on the other's result. The Customer Agent then evaluates
+the offer. It can accept, decline, or return one revised request; the same
+inventory/quote pair is rerun for that follow-up, for a maximum of two rounds
+total. Ordering is called only after acceptance, so no transaction can precede
+customer approval. Financial produces the final snapshot afterward.
+
+== Workflow
+
+[plantuml,workflow,png]
+....
+include::workflow.puml[]
+....
+
+== Agent Responsibilities
+
+=== Orchestrator
+
+Parses the request, extracts items, quantities, intent, and dates, delegates
+tasks, and combines the final response.
+
+=== Inventory
+
+Checks stock and minimum levels, then proposes replenishment when needed.
+Uses `get_all_inventory()` and `get_stock_level()`. When replenishment is
+needed, it may call Tavily for supplier options and market context.
+
+=== Quoting
+
+Builds itemized quotes from product prices, historical quotes via
+`search_quote_history()`, and volume discounts.
+
+=== Ordering
+
+Rechecks availability, calculates delivery via
+`get_supplier_delivery_date()`, and records sales or stock orders with
+`create_transaction()`.
+
+=== Financial
+
+Reports cash, inventory value, total assets, and top sellers using
+`get_cash_balance()` and `generate_financial_report()`.
+
+== Data Consistency
+
+SQLite is the shared source of truth. Transaction changes go through the
+Ordering agent, and the Orchestrator requests a post-transaction report.
+
+Tools do not count as agents; the internal team count remains exactly five.
+
+== Starter Function Coverage
+
+* `generate_sample_inventory()` creates reproducible initial stock.
+* `init_database()` creates tables and loads CSV data.
+* `create_transaction()` records sales and stock orders.
+* `get_all_inventory()` returns positive stock by item and date.
+* `get_stock_level()` returns one item's stock at a date.
+* `get_supplier_delivery_date()` calculates lead time by quantity.
+* `get_cash_balance()` calculates cash from transactions.
+* `generate_financial_report()` returns cash, assets, inventory, and top sellers.
+* `search_quote_history()` finds comparable historical quotes.
+* `run_test_scenarios()` initializes and evaluates the complete workflow.
+
+Initialization functions are called by the Financial agent during startup.
+`run_test_scenarios()` is the evaluation harness used to exercise all agents.
+
+== Rules
+
+* Use exact item names from the inventory reference.
+* Include an explicit request or delivery date in every delegation.
+* Confirm orders only after availability or replenishment is verified.
+* Confirm state changes only after a successful database transaction.
+* Treat Tavily results as advisory; SQLite and the internal delivery calculator
+  remain authoritative.
+
+== Evaluation Modes
+
+The default local and CI run evaluates all 20 supplied scenarios:
+
+----
+python project_starter.py
+----
+
+An optional four-scenario smoke test can be run explicitly:
+
+----
+python project_starter.py --smoke
+----
+
+The complete evaluation is therefore also the default in GitHub Actions.
+
+`test_results.csv` contains one tabular row per negotiation attempt. IDs use
+`<scenario>.<round>` (for example, `3.0` and `3.1`); financial state is populated
+on the final attempt only. Full conversational
+responses and agent trace data are written to `logs/multi_agent.log` instead of
+being embedded in the CSV.

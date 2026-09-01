@@ -1,0 +1,88 @@
+@startuml
+title Beaver's Choice Paper Company - Pydantic AI Workflow
+
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam activity {
+  BackgroundColor #F7F9FC
+  BorderColor #2F4054
+  ArrowColor #2F4054
+}
+
+actor "Customer" as Customer
+rectangle "External Customer Agent\nMaintains customer context\nand negotiation points" as CustomerAgent
+database "SQLite database" as DB
+collections "CSV reference data" as CSV
+cloud "Tavily web search" as Tavily
+
+package "Exactly five agents" {
+  rectangle "1. Orchestrator Agent\nReceives text request,\nextracts date and intent,\ndelegates and combines responses" as Orchestrator
+  rectangle "2. Inventory Agent\nChecks stock and thresholds;\ncreates replenishment decisions" as Inventory
+  rectangle "3. Quoting Agent\nUses prices, quote history,\nand volume discounts" as Quoting
+  rectangle "4. Ordering Agent\nValidates availability,\ncalculates supplier delivery,\nrecords sales or stock orders" as Ordering
+  rectangle "5. Financial Agent\nReports cash, inventory value,\nassets, and top sellers" as Financial
+}
+
+Customer --> CustomerAgent : request + customer context
+CustomerAgent --> Orchestrator : enriched JSON request\n(context + negotiation points)
+Financial --> DB : init_database()\ngenerate_sample_inventory()
+Financial --> Financial : run_test_scenarios()
+Orchestrator --> Inventory : parallel: inventory check /\nrestock request
+Inventory --> DB : get_all_inventory()\nget_stock_level()
+Inventory --> Tavily : supplier_research()\nonly if replenishment is needed
+Tavily --> Inventory : supplier options + sources
+Inventory --> Orchestrator : stock status + replenishment plan
+
+Orchestrator --> Quoting : parallel: normalized request + date
+Quoting --> CSV : quote_requests.csv\nquotes.csv
+Quoting --> DB : search_quote_history()
+Quoting --> Orchestrator : itemized quote + discount explanation
+
+Orchestrator --> CustomerAgent : offer + inventory/quote JSON\n(round 0 or 1)
+CustomerAgent --> Orchestrator : accept / decline /\nrevised_request
+Orchestrator --> Inventory : revised request (round 1 only)
+Orchestrator --> Quoting : revised request (round 1 only)
+
+note over Inventory,Quoting
+These delegations run concurrently.
+The Orchestrator joins both JSON results
+before calling Ordering.
+end note
+
+Orchestrator --> Ordering : accepted order + date\n(only after customer acceptance)
+Ordering --> Inventory : final availability check
+Ordering --> DB : get_stock_level()\ncreate_transaction()
+Ordering --> Ordering : get_supplier_delivery_date()
+Ordering --> Orchestrator : fulfillment result + delivery date
+
+Orchestrator --> Financial : post-transaction report request
+Financial --> DB : get_cash_balance()\ngenerate_financial_report()
+Financial --> Orchestrator : financial snapshot
+
+Orchestrator --> Customer : text response\nquote, status, delivery,\nfinancial information
+
+note right of Orchestrator
+No agent-to-agent hidden state:
+all hand-offs are validated JSON
+containing normalized item names,
+quantities, and ISO dates.
+end note
+
+note bottom of DB
+Transactions are the source of truth.
+Stock orders increase stock and reduce cash;
+sales reduce stock and increase cash.
+end note
+
+note over CustomerAgent,Orchestrator
+At most two negotiation rounds total.
+CSV attempt IDs are scenario.round (base.0, base.1).
+No ordering transaction occurs before acceptance.
+end note
+
+note right of Tavily
+Advisory context only.
+SQLite and the internal delivery
+calculator remain authoritative.
+end note
+@enduml

@@ -1,0 +1,183 @@
+= Beaver's Choice Paper Company: Reflection Report
+:toc:
+:sectnums:
+
+== System Overview
+
+The implementation is a text-based multi-agent system built with Pydantic AI.
+The internal team contains exactly five agents:
+
+* *Orchestrator Agent*: receives the customer request, preserves the request
+  date, delegates work, validates the hand-offs, and composes the customer-safe
+  response.
+* *Inventory Agent*: normalizes requested item names, checks dated stock and
+  minimum levels, and recommends replenishment. Supplier web research is
+  advisory only.
+* *Quoting Agent*: uses catalog prices, historical quotes, and volume discounts
+  to produce an itemized quote.
+* *Ordering Agent*: performs the authoritative availability recheck, calculates
+  delivery timing, and records accepted sales through the database transaction
+  tool.
+* *Financial Agent*: reports cash, inventory value, total assets, and top-selling
+  products after the order step.
+
+An external *Customer Agent* was added later as a partner-facing extension. It
+maintains request context and negotiation points before handing the enriched JSON
+request to the internal Orchestrator. It is intentionally outside the internal
+team boundary and does not replace or redesign any of the five team roles.
+
+The Customer Agent is the external entry point; the Orchestrator remains the
+single entry point into the internal team. All agent hand-offs are validated
+JSON payloads. Inventory and Quoting run in parallel because both depend only on
+the original request and read-only reference data. The Orchestrator joins those
+results before invoking Ordering. Ordering is sequential because it must
+recheck shared inventory and perform state-changing transactions. Financial
+executes after Ordering so its snapshot includes the completed transaction.
+Finally, the Orchestrator combines all structured results into one concise
+customer-facing response.
+
+== Tools and Data Integrity
+
+The tools wrap the starter functions required by the project:
+
+|===
+|Agent |Tool |Starter helper |Purpose
+
+|Inventory
+|inventory_tool
+|get_all_inventory, get_stock_level
+|Return aggregate and item-level dated stock with replenishment status
+
+|Inventory
+|supplier_research_tool
+|Tavily web search
+|Add advisory supplier context when replenishment is needed
+
+|Quoting
+|quote_history_tool
+|search_quote_history
+|Find comparable historical quotes
+
+|Ordering
+|delivery_date_tool
+|get_supplier_delivery_date
+|Calculate authoritative lead time
+
+|Ordering
+|transaction_tool
+|create_transaction
+|Record accepted sales or stock orders
+
+|Financial
+|cash_balance_tool
+|get_cash_balance
+|Calculate cash as of a date
+
+|Financial
+|financial_report_tool
+|generate_financial_report
+|Produce the financial and inventory snapshot
+|===
+
+SQLite is the source of truth for inventory, transactions, cash, and reports.
+The supplier search cannot overwrite database values or the internal delivery
+calculation. Transactions are written only after the Ordering Agent confirms
+availability, and the customer response does not expose credentials, internal
+errors, or unnecessary private information.
+
+== Evaluation Results
+
+The complete `quote_requests_sample.csv` dataset was evaluated with:
+
+[source,text]
+----
+python project_starter.py --full
+----
+
+The resulting `test_results.csv` contains 20 rows and structured columns for
+acceptance, delivery, quote totals, inventory status, transactions, and
+financial values. The conversational responses and detailed agent trace are
+kept in `logs/multi_agent.log`, not embedded in the table.
+
+|===
+|Measure |Result |Interpretation
+
+|Requests evaluated
+|20
+|The complete supplied sample was used
+
+|Accepted requests
+|4
+|Requests 1, 4, 10, and 20 were fulfilled
+
+|Rejected requests
+|16
+|The system correctly declined requests with insufficient or unknown stock
+
+|Cash-changing steps
+|3
+|Three accepted transaction batches changed the cash balance
+
+|Quote discounts
+|Applied in several cases
+|The quote agent made discounts explicit in the structured totals
+|===
+
+The strongest result is that the system meets the evaluation thresholds:
+more than three requests were fulfilled, at least three cash-changing
+transactions occurred, and not every request was accepted. The rejection
+messages provide operational reasons such as insufficient inventory or an
+unknown catalog item. The accepted requests also include delivery dates,
+transaction IDs, and post-transaction financial values. Structured Pydantic
+outputs and the one-row-per-request CSV make the result auditable.
+
+The main limitation is the relatively low fulfillment rate. The seeded
+inventory intentionally contains only a subset of the catalog, while several
+sample requests use alternate names, quantities above available stock, or
+items not present in the catalog. Some normalization rules improve this
+behavior, but the evaluation still shows that name matching and replenishment
+planning are the main sources of declined requests. Supplier research also
+adds useful context but cannot immediately make unavailable stock fulfillable.
+
+== Further Improvements
+
+. *Introduce a deterministic request parser and catalog matcher.* Use a
+  controlled alias catalog with unit/format extraction and a confidence
+  threshold before invoking the worker agents. Ambiguous names could be
+  returned to the customer as a clarification request rather than being
+  marked unknown.
+
+. *Separate replenishment planning from immediate fulfillment.* The Ordering
+  Agent could create a pending replenishment proposal with supplier, quantity,
+  cost, and ETA, while clearly distinguishing “available now” from “available
+  after replenishment.” This would prevent an order from being accepted merely
+  because a supplier may have stock.
+
+. *Add transactional concurrency protection.* A database transaction or
+  application-level lock around the final availability check and sales writes
+  would prevent two simultaneous customer requests from selling the same
+  units.
+
+. *Add deterministic evaluation assertions and observability metrics.* The CI
+  workflow could validate CSV row count, accepted count, cash-changing count,
+  and presence of rejection reasons. Timing and token usage per agent could
+  also be logged to identify slow or unnecessarily expensive calls.
+
+== Negotiation Loop
+
+The workflow now bounds customer negotiation to two rounds: Inventory and
+Quoting run in parallel, the external Customer Agent evaluates their offer, and
+one complete revised request may trigger a second parallel evaluation. Ordering
+is gated on an explicit customer `accept` decision; declines and exhausted
+revisions create no transactions. `test_results.csv` records every attempt with
+IDs such as `3.0` (original) and `3.1` (follow-up), while financial state is
+written only on the final row and detailed attempt payloads remain in the log.
+
+== Submission Contents
+
+* `workflow/workflow.puml` and `workflow/workflow.pdf`: updated workflow
+  diagram with the external Customer Agent and five-agent internal team.
+* `project_starter.py`: complete Pydantic AI implementation and evaluation
+  harness.
+* `test_results.csv`: full evaluation output.
+* `REFLECTION_REPORT.adoc`: this explanation, evaluation, and improvement plan.

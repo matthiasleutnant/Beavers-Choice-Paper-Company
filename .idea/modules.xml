@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Beavers Choice Paper Company.iml" filepath="$PROJECT_DIR$/Beavers Choice Paper Company.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../UdaPlay/UdaPlay.iml" filepath="$PROJECT_DIR$/../UdaPlay/UdaPlay.iml" />
+    </modules>
+  </component>
+</project>
